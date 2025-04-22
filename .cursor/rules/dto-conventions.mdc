@@ -1,0 +1,11 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Sets standards for Data Transfer Objects (DTOs), typically records, including parameter validation in compact canonical constructors.
+globs: **/src/main/kotlin/com/sears/appointment/dto/*.kt
+---
+- Must be data class, unless specified in a prompt otherwise.
+- Must use notation to validate input parameter data (@field:Email, @NotBlank, etc., as appropriate).

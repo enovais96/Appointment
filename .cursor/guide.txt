@@ -1,0 +1,29 @@
+I'd like to create a software using Kafka, Spring Boot, Kotlin, Docker, and MongoDB. The project will include unit and integration tests, and follow a clean architecture, SOLI principles with Controller, Service, and Repository. I like to create a guide for this software.
+
+Context:
+The goal is to allow doctors to be created with their specialties, and for patients to be able to book appointments. A Kafka consumer will process these booking requests and find the best available time based on the patient's preferences.
+
+For example:
+I want to see an orthopedist at 9 AM on 04/23/2025, but the first available time is actually 3 PM on 04/30/2025.
+In that case, the patient will need to accept this new proposed time to proceed with the booking.
+
+Here's the flow logic:
+
+- The user makes a request to book a consultation.
+- A Kafka message is created with the booking data and patient information.
+- A processor listens to the topic and searches for the earliest available time for a suitable doctor.
+- Each doctor must register their specialty and availability — for example, an orthopedist may work on Mondays, Wednesdays, and Fridays from 8 AM to 11 AM and from 1 PM to 5 PM.
+- Each appointment takes 30 minutes.
+- If the requested time is available, the system books it.
+- If the requested time is not available (already booked), the system will suggest the next available time, and the patient must accept it to complete the booking. While waiting for the patient's response, that proposed time should be temporarily marked as unavailable to prevent multiple consultations from being booked at the same time.
+
+Phase 1: Prepare the project [COMPLETED]
+ - Create docker structure for this application [DONE]
+ - Create docker structure for kafka [DONE]
+ - Create docker structure for mongoDB [DONE]
+ - Update application.properties with MongoDB and Kafka configurations [DONE]
+ - Update build.gradle with necessary dependencies [DONE]
+ - Create a empty repository in GIT
+ - Add the files in the commit
+ - Make the commit
+ - Configure CI/CD in github

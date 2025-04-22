@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Personal rules so the cursor respect my decisions before make anything in code.
+globs: **/*.kt
+---
+- Do not change anything before receive my permission.
+- When you make commits be very clear in the messages.
+- Every time we finalize one phase we will mark as a conclude in our ./cursor/guide.txt
