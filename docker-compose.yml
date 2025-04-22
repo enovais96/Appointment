@@ -12,7 +12,9 @@ services:
       - mongodb
       - kafka
     environment:
+      SPRING_PROFILES_ACTIVE: docker
       SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/appointment
+      SPRING_DATA_MONGODB_DATABASE: appointment
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     networks:
       - appointment-network
