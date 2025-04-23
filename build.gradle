@@ -36,6 +36,16 @@ dependencies {
 	implementation 'org.jetbrains.kotlin:kotlin-reflect'
 	implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 	
+	// Validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	
+	// Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	
+	// OpenAPI Documentation (Swagger)
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+	implementation 'org.springdoc:springdoc-openapi-starter-common:2.3.0'
+	
 	// Test dependencies
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'

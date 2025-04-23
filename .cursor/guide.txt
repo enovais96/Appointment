@@ -23,7 +23,24 @@ Phase 1: Prepare the project [COMPLETED]
  - Create docker structure for mongoDB [DONE]
  - Update application.properties with MongoDB and Kafka configurations [DONE]
  - Update build.gradle with necessary dependencies [DONE]
- - Create a empty repository in GIT
- - Add the files in the commit
- - Make the commit
- - Configure CI/CD in github
+ - Create a empty repository in GIT [DONE]
+ - Add the files in the commit [DONE]
+ - Make the commit [DONE]
+
+Phase 2 - Authentication:
+ - As we saw in the rules, we will follow OWASP best practices
+
+Phase 2.1 - User Model [DONE]
+ - We have a client registry that includes an email, password, and an automatically generated ID.
+ - The email must be valid and unique.
+ - The password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.
+
+Phase 2.2 - Create an endpoint to register a user [DONE]
+ - Create a POST request to register a user following all the rules mentioned above.
+
+Phase 2.3 - API Documentation [DONE]
+ - Implement Swagger/OpenAPI for API documentation
+ - Document all DTOs, controllers, and endpoints
+ - Configure security to allow access to Swagger UI
+
+
