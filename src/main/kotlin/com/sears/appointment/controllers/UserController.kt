@@ -1,15 +1,15 @@
 package com.sears.appointment.controllers
 
-import com.sears.appointment.dto.ApiResponse
+import com.sears.appointment.dto.ApiReturn
 import com.sears.appointment.dto.UserRegistrationDto
 import com.sears.appointment.dto.UserResponseDto
 import com.sears.appointment.services.interfaces.UserService
 import com.sears.appointment.utils.ResponseFactory
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
-import io.swagger.v3.oas.annotations.responses.ApiResponses
-import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -33,30 +33,32 @@ class UserController(
     )
     @ApiResponses(
         value = [
-            SwaggerApiResponse(
+            ApiResponse(
                 responseCode = "201",
                 description = "User registered successfully",
-                content = [Content(schema = Schema(implementation = ApiResponse::class))]
+                content = [Content(schema = Schema(implementation = ApiReturn::class))]
             ),
-            SwaggerApiResponse(
-                responseCode = "400", 
+            ApiResponse(
+                responseCode = "400",
                 description = "Invalid input or email already exists",
-                content = [Content(schema = Schema(implementation = ApiResponse::class))]
+                content = [Content(schema = Schema(implementation = ApiReturn::class))]
             ),
-            SwaggerApiResponse(
+            ApiResponse(
                 responseCode = "500",
                 description = "Internal server error",
-                content = [Content(schema = Schema(implementation = ApiResponse::class))]
+                content = [Content(schema = Schema(implementation = ApiReturn::class))]
             )
         ]
     )
     @PostMapping("/register", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun registerUser(@Valid @RequestBody userRegistrationDto: UserRegistrationDto): ResponseEntity<ApiResponse<UserResponseDto>> {
+    fun registerUser(@Valid @RequestBody userRegistrationDto: UserRegistrationDto): ResponseEntity<ApiReturn<UserResponseDto>> {
         try {
             val registeredUser = userService.registerUser(userRegistrationDto)
             return ResponseFactory.created(registeredUser, "User registered successfully")
+        } catch (e: IllegalArgumentException) {
+            return ResponseFactory.error(e.message ?: "Invalid request", HttpStatus.BAD_REQUEST)
         } catch (e: Exception) {
-            throw e
+            return ResponseFactory.error("An unexpected error occurred: ${e.message}", HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 } 

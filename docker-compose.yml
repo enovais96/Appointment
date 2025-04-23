@@ -3,6 +3,7 @@ version: '3.8'
 services:
   # Application service
   app:
+    container_name: appointment-app
     build:
       context: .
       dockerfile: Dockerfile
@@ -21,6 +22,7 @@ services:
 
   # MongoDB service
   mongodb:
+    container_name: appointment-mongodb
     image: mongo:latest
     ports:
       - "27017:27017"
@@ -31,6 +33,7 @@ services:
 
   # Kafka and ZooKeeper services
   zookeeper:
+    container_name: appointment-zookeeper
     image: confluentinc/cp-zookeeper:latest
     ports:
       - "2181:2181"
@@ -41,6 +44,7 @@ services:
       - appointment-network
 
   kafka:
+    container_name: appointment-kafka
     image: confluentinc/cp-kafka:latest
     ports:
       - "9092:9092"
@@ -58,6 +62,7 @@ services:
 
   # Kafka UI for monitoring
   kafka-ui:
+    container_name: appointment-kafka-ui
     image: provectuslabs/kafka-ui:latest
     ports:
       - "8081:8080"
@@ -72,6 +77,7 @@ services:
 
   # MongoDB Express for MongoDB UI
   mongo-express:
+    container_name: appointment-mongo-express
     image: mongo-express:latest
     ports:
       - "8082:8081"

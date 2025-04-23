@@ -11,6 +11,6 @@ globs: **/src/main/kotlin/com/sears/appointment/controllers/*.kt
 - Must specify class-level API routes with @RequestMapping, e.g. ("/api/user").
 - Class methods must use best practice HTTP method annotations, e.g, create = @postMapping("/create"), etc.
 - All dependencies in class must be in the constructor, unless specified otherwise.
-- Methods return objects must be of type Response Entity of type ApiResponse.
+- Methods return objects must be of type Response Entity of type ApiReturn.
 - All class method logic must be implemented in a try..catch block(s).
 - Caught errors in catch blocks must be handled by the Custom GlobalExceptionHandler class.

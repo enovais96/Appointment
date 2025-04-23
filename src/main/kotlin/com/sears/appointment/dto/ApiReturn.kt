@@ -3,7 +3,7 @@ package com.sears.appointment.dto
 import io.swagger.v3.oas.annotations.media.Schema
 
 @Schema(description = "Standard API response wrapper")
-data class ApiResponse<T>(
+data class ApiReturn<T>(
     @Schema(description = "Indicates if the operation was successful", example = "true")
     val success: Boolean,
     

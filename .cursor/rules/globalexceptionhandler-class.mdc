@@ -5,5 +5,5 @@ alwaysApply: false
 ---
 ---
 description: Structure of GlobalExceptionHandler class.
-globs: **/src/main/kotlin/com/sears/appointment/GlobalExceptionHandler.java
+globs: **/src/main/kotlin/com/sears/appointment/global/GlobalExceptionHandler.java
 ---

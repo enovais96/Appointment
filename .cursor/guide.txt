@@ -43,4 +43,13 @@ Phase 2.3 - API Documentation [DONE]
  - Document all DTOs, controllers, and endpoints
  - Configure security to allow access to Swagger UI
 
+Phase 2.4 - Create request to generate token
+ - Create a POST request to receive the email and password, and validate the credentials.
+ - If the credentials are valid, generate a JWT token with a 10-minute expiration and a refresh token with a 15-day expiration.
+ - Save the refresh token in a model that includes user information, the refresh token, expiration date, and automatically delete it if expired.
+ - The JWT token should contain the user ID. Store the secret_key in the .properties file.
 
+Phase 2.5 - Create request to refresh token
+ - Validate if the refresh token has not expired.
+ - Generate a new pair of tokens with the same expiration times.
+ - Delete the old refresh token and create a new one.
