@@ -7,7 +7,7 @@ import java.util.Optional
 
 interface RefreshTokenService {
     fun generateRefreshToken(userId: String): RefreshToken
-    fun findByTokenAndUserId(token: String, userId: String): Optional<RefreshToken>
+    fun findByTokenAndUserId(token: String, userId: String): RefreshToken?
     fun verifyExpiration(token: RefreshToken): RefreshToken
     fun deleteByUserIdAndHashToken(userId: String, token: String)
 } 

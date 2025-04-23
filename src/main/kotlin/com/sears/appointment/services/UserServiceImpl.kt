@@ -17,9 +17,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
-    private val passwordEncoder: PasswordEncoder,
-    private val jwtUtils: JwtUtils,
-    private val refreshTokenService: RefreshTokenService
+    private val passwordEncoder: PasswordEncoder
 ) : UserService {
 
     @Transactional
@@ -41,49 +39,4 @@ class UserServiceImpl(
         )
     }
 
-    @Transactional
-    override fun loginUser(loginRequestDto: LoginRequestDto): TokenResponseDto {
-        val user = userRepository.findByEmail(loginRequestDto.email)
-            ?: throw BadCredentialsException("Invalid email or password")
-
-        if (!passwordEncoder.matches(loginRequestDto.password, user.password)) {
-            throw BadCredentialsException("Invalid email or password")
-        }
-
-        val userId = user.id ?: throw IllegalStateException("User ID is null")
-        val accessToken = jwtUtils.generateAccessToken(userId)
-        val refreshToken = refreshTokenService.generateRefreshToken(userId)
-
-        return TokenResponseDto(
-            accessToken = accessToken,
-            refreshToken = refreshToken.token
-        )
-    }
-
-    @Transactional
-    override fun refreshToken(refreshToken: String): TokenResponseDto {
-        if(!jwtUtils.validateRefreshToken(refreshToken)) {
-            throw IllegalArgumentException("Invalid refresh token")
-        }
-
-        val userId = jwtUtils.getUserIdFromToken(refreshToken)
-
-        val user = userRepository.findById(userId)
-            .orElseThrow { IllegalArgumentException("Invalid refresh token") }
-
-        val refreshTokenObj = refreshTokenService.findByTokenAndUserId(refreshToken, user.id.toString())
-            .orElseThrow { IllegalArgumentException("Invalid refresh token" ) }
-        
-        refreshTokenService.verifyExpiration(refreshTokenObj)
-
-        refreshTokenService.deleteByUserIdAndHashToken(userId, refreshToken)
-
-        val accessToken = jwtUtils.generateAccessToken(userId)
-        val refreshToken = refreshTokenService.generateRefreshToken(userId)
-        
-        return TokenResponseDto(
-            accessToken = accessToken,
-            refreshToken = refreshToken.token
-        )
-    }
 } 

@@ -31,7 +31,7 @@ class RefreshTokenServiceImpl(
         return refreshTokenRepository.save(refreshToken)
     }
 
-    override fun findByTokenAndUserId(token: String, userId: String): Optional<RefreshToken> {
+    override fun findByTokenAndUserId(token: String, userId: String): RefreshToken? {
         return refreshTokenRepository.findByTokenAndUserId(token, userId)
     }
 
