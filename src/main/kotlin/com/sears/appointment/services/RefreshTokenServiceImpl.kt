@@ -7,8 +7,6 @@ import com.sears.appointment.utils.JwtUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.time.Instant
-import java.util.Date
-import java.util.Optional
 
 @Service
 class RefreshTokenServiceImpl(

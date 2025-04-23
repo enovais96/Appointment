@@ -13,11 +13,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
-import org.springframework.core.annotation.Order
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -54,14 +51,8 @@ class AuthController(
     )
     @PostMapping("/login", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun loginUser(@Valid @RequestBody loginRequestDto: LoginRequestDto): ResponseEntity<ApiReturn<TokenResponseDto>> {
-        try {
-            val tokenResponse = authService.loginUser(loginRequestDto)
-            return ResponseFactory.success(tokenResponse, "Authentication successful")
-        } catch (e: BadCredentialsException) {
-            return ResponseFactory.error(e.message ?: "Invalid credentials", HttpStatus.UNAUTHORIZED)
-        } catch (e: Exception) {
-            return ResponseFactory.error("An unexpected error occurred: ${e.message}", HttpStatus.INTERNAL_SERVER_ERROR)
-        }
+        val tokenResponse = authService.loginUser(loginRequestDto)
+        return ResponseFactory.success(tokenResponse, "Authentication successful")
     }
 
     @Operation(
@@ -89,14 +80,8 @@ class AuthController(
     )
     @PostMapping("/refresh-token", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun refreshToken(@Valid @RequestBody refreshTokenRequest: RefreshTokenRequestDto): ResponseEntity<ApiReturn<TokenResponseDto>> {
-        try {
-            val tokenResponse = authService.refreshToken(refreshTokenRequest.refreshToken)
-            return ResponseFactory.success(tokenResponse, "Token refreshed successfully")
-        } catch (e: IllegalArgumentException) {
-            return ResponseFactory.error(e.message ?: "Invalid refresh token", HttpStatus.BAD_REQUEST)
-        } catch (e: Exception) {
-            return ResponseFactory.error("An unexpected error occurred: ${e.message}", HttpStatus.INTERNAL_SERVER_ERROR)
-        }
+        val tokenResponse = authService.refreshToken(refreshTokenRequest.refreshToken)
+        return ResponseFactory.success(tokenResponse, "Token refreshed successfully")
     }
 
 }

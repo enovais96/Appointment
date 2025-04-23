@@ -1,9 +1,6 @@
 package com.sears.appointment.services.interfaces
 
 import com.sears.appointment.model.RefreshToken
-import org.apache.el.parser.Token
-import java.time.Instant
-import java.util.Optional
 
 interface RefreshTokenService {
     fun generateRefreshToken(userId: String): RefreshToken

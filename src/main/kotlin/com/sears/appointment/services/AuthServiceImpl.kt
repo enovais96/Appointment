@@ -2,13 +2,9 @@ package com.sears.appointment.services
 
 import com.sears.appointment.dto.LoginRequestDto
 import com.sears.appointment.dto.TokenResponseDto
-import com.sears.appointment.dto.UserRegistrationDto
-import com.sears.appointment.dto.UserResponseDto
-import com.sears.appointment.model.User
 import com.sears.appointment.repositories.UserRepository
 import com.sears.appointment.services.interfaces.AuthService
 import com.sears.appointment.services.interfaces.RefreshTokenService
-import com.sears.appointment.services.interfaces.UserService
 import com.sears.appointment.utils.JwtUtils
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.crypto.password.PasswordEncoder

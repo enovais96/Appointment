@@ -3,6 +3,7 @@ package com.sears.appointment.global
 import com.sears.appointment.dto.ApiReturn
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.validation.FieldError
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -46,5 +47,15 @@ class GlobalExceptionHandler {
             data = null
         )
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse)
+    }
+
+    @ExceptionHandler(BadCredentialsException::class)
+    fun handleBadCredentialsException(ex: BadCredentialsException): ResponseEntity<ApiReturn<Nothing>> {
+        val apiResponse = ApiReturn<Nothing>(
+            success = false,
+            message = ex.message ?: "Invalid credentials",
+            data = null
+        )
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiResponse)
     }
 } 
