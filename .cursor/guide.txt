@@ -63,7 +63,7 @@ Phase 2.6 - Validate token [DONE]
  - After that, extract the userId from the token and verify if a user with this ID exists. If not, return a "token invalid" error.
  - If the user exists, store the user ID in the SecurityContextHolder.
 
-Phase 3 - CRUD Doctors
+Phase 3 - CRUD Doctors [DONE]
  - Remember to follow every rule in .cursor/rules.
  - I want you to create a CRUD for doctors.
  - Each doctor should have a name and specialty.
@@ -71,9 +71,11 @@ Phase 3 - CRUD Doctors
  - The most important part of editing is updating the availability.
 
 
-Phase 4 - Appointments solicitation
- - We need to save appointment solicitation
- - We will recieve paicent information Name, Age, Phone and Email
- - We recieve specialty, Date and Time that he want to consult
- - We save this information in a table of solicitation
- - We put the id of this solicitation in a kafka topic
+Phase 4 - Appointment Solicitation
+ - Remember to follow every rule in .cursor/rules.
+ - We need to save the appointment solicitation.
+ - We will receive the patient’s information: Name, Age, Phone and Email.
+ - We will also receive the requested specialty, date, and time for the consultation.
+ - If we don’t have a doctor with that specialty, we return an error.
+ - We save all this information in the solicitation table.
+ - We send the ID of this solicitation to a Kafka topic.

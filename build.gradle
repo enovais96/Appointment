@@ -29,6 +29,9 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
 	
+	// Kafka
+	implementation 'org.springframework.kafka:spring-kafka:3.3.5'
+	
 	// Jackson
 	implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
 	implementation "com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}"
