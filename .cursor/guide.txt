@@ -54,7 +54,7 @@ Phase 2.5 - Create request to refresh token [DONE]
  - Generate a new pair of tokens with the same expiration times.
  - Delete the old refresh token and create a new one.
 
-Phase 2.6 - Validate token
+Phase 2.6 - Validate token [DONE]
  - Intercept the request, in the header look for the Authorization field.
  - It must start with "Bearer ".
  - First, check if the token is valid.
@@ -62,3 +62,18 @@ Phase 2.6 - Validate token
  - Then, check if the toke is the type access and not refresh
  - After that, extract the userId from the token and verify if a user with this ID exists. If not, return a "token invalid" error.
  - If the user exists, store the user ID in the SecurityContextHolder.
+
+Phase 3 - CRUD Doctors
+ - Remember to follow every rule in .cursor/rules.
+ - I want you to create a CRUD for doctors.
+ - Each doctor should have a name and specialty.
+ - We need to define the days and times when the doctor will be available, for example: Mondays, Wednesdays, and Fridays from 8 AM to 11 AM and from 1 PM to 5 PM.
+ - The most important part of editing is updating the availability.
+
+
+Phase 4 - Appointments solicitation
+ - We need to save appointment solicitation
+ - We will recieve paicent information Name, Age, Phone and Email
+ - We recieve specialty, Date and Time that he want to consult
+ - We save this information in a table of solicitation
+ - We put the id of this solicitation in a kafka topic

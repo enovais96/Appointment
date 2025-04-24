@@ -1,6 +1,7 @@
 package com.sears.appointment.global
 
 import com.sears.appointment.dto.ApiReturn
+import com.sears.appointment.global.exceptions.ResourceNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.BadCredentialsException
@@ -37,6 +38,16 @@ class GlobalExceptionHandler {
             data = errors.toMap()
         )
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
+    }
+
+    @ExceptionHandler(ResourceNotFoundException::class)
+    fun handleResourceNotFoundException(ex: ResourceNotFoundException): ResponseEntity<ApiReturn<Nothing>> {
+        val apiResponse = ApiReturn<Nothing>(
+            success = false,
+            message = ex.message ?: "Resource not found",
+            data = null
+        )
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse)
     }
 
     @ExceptionHandler(Exception::class)
