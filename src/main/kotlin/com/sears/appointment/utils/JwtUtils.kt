@@ -48,6 +48,12 @@ class JwtUtils {
         return tokenType == "refresh"
     }
 
+    fun isAccessToken(token: String): Boolean {
+        val claims = getAllClaimsFromToken(token)
+        val tokenType = claims["type"] as? String ?: return false
+        return tokenType == "access"
+    }
+
     fun getUserIdFromToken(token: String): String {
         val claims = getAllClaimsFromToken(token)
         return claims.subject

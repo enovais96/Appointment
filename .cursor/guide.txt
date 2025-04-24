@@ -53,3 +53,12 @@ Phase 2.5 - Create request to refresh token [DONE]
  - Validate if the refresh token has not expired.
  - Generate a new pair of tokens with the same expiration times.
  - Delete the old refresh token and create a new one.
+
+Phase 2.6 - Validate token
+ - Intercept the request, in the header look for the Authorization field.
+ - It must start with "Bearer ".
+ - First, check if the token is valid.
+ - Then, check if the token has not expired.
+ - Then, check if the toke is the type access and not refresh
+ - After that, extract the userId from the token and verify if a user with this ID exists. If not, return a "token invalid" error.
+ - If the user exists, store the user ID in the SecurityContextHolder.
