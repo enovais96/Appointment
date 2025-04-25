@@ -38,13 +38,21 @@ data class AppointmentSolicitation(
     
     val status: AppointmentStatus = AppointmentStatus.PENDING,
     
-    val createdAt: Long = System.currentTimeMillis()
+    // Doctor ID is null until assigned during confirmation
+    val doctorId: String? = null,
+    
+    // Fields for suggested alternative appointments
+    val suggestedDate: LocalDate? = null,
+    val suggestedTime: String? = null,
+    
+    val createdAt: Long = System.currentTimeMillis(),
+    val updatedAt: Long = System.currentTimeMillis()
 )
 
 enum class AppointmentStatus {
-    PENDING, 
-    PROCESSED, 
-    SUGGESTED, 
-    CONFIRMED, 
-    REJECTED
+    PENDING,      // Initial state
+    PROCESSING,   // Being processed by the consumer
+    CONFIRMED,    // Appointment confirmed at requested time
+    SUGGESTED,    // Alternative time suggested, awaiting patient confirmation
+    REJECTED      // Appointment rejected (e.g., no doctors available)
 } 

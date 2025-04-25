@@ -39,6 +39,22 @@ data class AppointmentSolicitationResponseDto(
     @Schema(description = "Current status of the appointment solicitation", example = "PENDING")
     val status: AppointmentStatus,
     
+    @Schema(description = "ID of the doctor assigned to this appointment (null if not assigned)", example = "61a2e0e3b54f6a23f0e66c5a")
+    val doctorId: String? = null,
+    
+    @Schema(description = "Suggested alternative appointment date (null if not suggested)", example = "2025-04-30")
+    val suggestedDate: LocalDate? = null,
+    
+    @Schema(description = "Suggested alternative appointment time (null if not suggested)", example = "15:00")
+    @field:Pattern(
+        regexp = "^([01]?[0-9]|2[0-3]):[0-5][0-9]$",
+        message = "Start time must be in format 'HH:mm' (e.g. '09:00' or '14:30')"
+    )
+    val suggestedTime: String? = null,
+    
     @Schema(description = "Creation timestamp in milliseconds", example = "1639057123456")
-    val createdAt: Long
+    val createdAt: Long,
+    
+    @Schema(description = "Last update timestamp in milliseconds", example = "1639057123456")
+    val updatedAt: Long? = null
 )
