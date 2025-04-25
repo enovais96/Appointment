@@ -20,7 +20,6 @@ class AppointmentSolicitationConsumer(
         logger.info("Received appointment solicitation message: {}", message)
         
         try {
-            // Delegate all validation and processing logic to the service
             val result = appointmentSolicitationValidatorService.validateAndProcessSolicitation(
                 message.appointmentSolicitationId
             )
@@ -36,8 +35,7 @@ class AppointmentSolicitationConsumer(
                 message.appointmentSolicitationId, 
                 e
             )
-            
-            // Try to reprocess the solicitation
+
             try {
                 appointmentSolicitationValidatorService.reprocessSolicitation(message.appointmentSolicitationId)
             } catch (reprocessException: Exception) {

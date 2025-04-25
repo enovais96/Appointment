@@ -31,60 +31,49 @@ class AppointmentSolicitationValidatorServiceImpl(
 
     private val logger = LoggerFactory.getLogger(AppointmentSolicitationValidatorServiceImpl::class.java)
     private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-    private val timeSlotDuration = 30 // minutes
+    private val timeSlotDuration = 30
 
     @Transactional
     override fun validateAndProcessSolicitation(solicitationId: String): AppointmentSolicitationResponseDto {
         logger.info("Validating appointment solicitation with ID: {}", solicitationId)
-        
-        // Get the solicitation
+
         val solicitation = appointmentSolicitationRepository.findById(solicitationId)
             .orElseThrow { ResourceNotFoundException("Appointment solicitation not found with ID: $solicitationId") }
-        
-        // Check if solicitation is in PENDING status
+
         if (solicitation.status != AppointmentStatus.PENDING) {
-            logger.info("Solicitation {} is not in PENDING status. Current status: {}", 
-                solicitationId, solicitation.status)
+            logger.info("Solicitation {} is not in PENDING status. Current status: {}", solicitationId, solicitation.status)
             return appointmentSolicitationService.getAppointmentSolicitationById(solicitationId)
         }
         
         try {
-            // Mark as PROCESSING
             val processingSolicitation = updateSolicitationStatus(solicitation, AppointmentStatus.PROCESSING)
-            
-            // Get the requested time as LocalTime for better handling
+
             val requestedTime = LocalTime.parse(processingSolicitation.requestedTime, timeFormatter)
-            
-            // Find doctors with the requested specialty
+
             val doctorsWithSpecialty = findDoctorsWithSpecialty(processingSolicitation.specialty)
+
             if (doctorsWithSpecialty.isEmpty()) {
                 logger.error("No doctors found with specialty: {}", processingSolicitation.specialty)
-                return updateSolicitationStatus(
-                    processingSolicitation, 
-                    AppointmentStatus.REJECTED
-                ).let { appointmentSolicitationService.getAppointmentSolicitationById(it.id!!) }
+
+                return updateSolicitationStatus(processingSolicitation, AppointmentStatus.REJECTED)
+                                                .let {
+                                                    appointmentSolicitationService.getAppointmentSolicitationById(it.id!!)
+                                                }
             }
-            
-            // Check each doctor's availability
+
             var availableDoctorId: String? = null
             for (doctorId in doctorsWithSpecialty) {
-                if (isDoctorAvailableAt(
-                        doctorId, 
-                        processingSolicitation.requestedDate, 
-                        requestedTime
-                    )) {
+                if (isDoctorAvailableAt(doctorId, processingSolicitation.requestedDate, requestedTime)) {
                     availableDoctorId = doctorId
                     break
                 }
             }
-            
-            // If a doctor is available, confirm the appointment
+
             if (availableDoctorId != null) {
                 logger.info("Doctor {} is available at the requested time", availableDoctorId)
                 return confirmAppointment(processingSolicitation.id!!, availableDoctorId)
             }
-            
-            // If no doctor is available at the requested time, find the next available time
+
             logger.info("No doctor available at the requested time for solicitation: {}", solicitationId)
             
             val nextAvailableSlot = findNextAvailableTimeSlot(
@@ -98,8 +87,7 @@ class AppointmentSolicitationValidatorServiceImpl(
                 
                 logger.info("Found alternative time slot: doctor={}, date={}, time={}", 
                     suggestedDoctorId, suggestedDate, suggestedTime)
-                
-                // Suggest an alternative appointment time
+
                 return suggestAlternativeAppointment(
                     processingSolicitation.id!!,
                     suggestedDate,
@@ -107,8 +95,7 @@ class AppointmentSolicitationValidatorServiceImpl(
                     suggestedDoctorId
                 )
             }
-            
-            // If no alternative time found, mark as REJECTED
+
             logger.error("No available time slots found for specialty: {}", processingSolicitation.specialty)
             val rejectedSolicitation = updateSolicitationStatus(processingSolicitation, AppointmentStatus.REJECTED)
             return appointmentSolicitationService.getAppointmentSolicitationById(rejectedSolicitation.id!!)
@@ -125,8 +112,7 @@ class AppointmentSolicitationValidatorServiceImpl(
         
         val solicitation = appointmentSolicitationRepository.findById(solicitationId)
             .orElseThrow { ResourceNotFoundException("Appointment solicitation not found with ID: $solicitationId") }
-        
-        // Book the time slot for the doctor
+
         val requestedTime = LocalTime.parse(solicitation.requestedTime, timeFormatter)
         val booked = doctorAvailabilityService.bookTimeSlot(
             doctorId, 
@@ -139,8 +125,7 @@ class AppointmentSolicitationValidatorServiceImpl(
             logger.error("Failed to book time slot for doctor: {}", doctorId)
             return appointmentSolicitationService.getAppointmentSolicitationById(solicitationId)
         }
-        
-        // Update the solicitation with the doctor and confirm it
+
         val confirmedSolicitation = solicitation.copy(
             status = AppointmentStatus.CONFIRMED,
             doctorId = doctorId,
@@ -162,8 +147,7 @@ class AppointmentSolicitationValidatorServiceImpl(
         
         val solicitation = appointmentSolicitationRepository.findById(solicitationId)
             .orElseThrow { ResourceNotFoundException("Appointment solicitation not found with ID: $solicitationId") }
-        
-        // Update the solicitation with the suggested time and doctor
+
         val suggestedSolicitation = solicitation.copy(
             status = AppointmentStatus.SUGGESTED,
             doctorId = doctorId,
@@ -181,14 +165,11 @@ class AppointmentSolicitationValidatorServiceImpl(
         logger.info("Reprocessing solicitation: {}", solicitationId)
         
         try {
-            // Get the solicitation
             val solicitation = appointmentSolicitationRepository.findById(solicitationId)
                 .orElseThrow { ResourceNotFoundException("Appointment solicitation not found with ID: $solicitationId") }
-            
-            // Mark as PENDING again
+
             val pendingSolicitation = updateSolicitationStatus(solicitation, AppointmentStatus.PENDING)
-            
-            // Send back to Kafka
+
             val kafkaMessage = AppointmentSolicitationKafkaMessage(
                 appointmentSolicitationId = pendingSolicitation.id!!
             )
@@ -216,14 +197,12 @@ class AppointmentSolicitationValidatorServiceImpl(
         fromTime: LocalTime
     ): Triple<String, LocalDate, String>? {
         logger.info("Finding next available time slot for specialty: {}", specialty)
-        
-        // Get all doctors with the specialty
+
         val doctorsWithSpecialty = findDoctorsWithSpecialty(specialty)
         if (doctorsWithSpecialty.isEmpty()) {
             return null
         }
-        
-        // Check each doctor for the next available slot
+
         for (doctorId in doctorsWithSpecialty) {
             val nextAvailable = doctorAvailabilityService.findNextAvailableTimeSlot(doctorId, fromDate, fromTime)
             if (nextAvailable != null) {

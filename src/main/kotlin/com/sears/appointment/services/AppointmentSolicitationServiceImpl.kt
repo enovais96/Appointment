@@ -23,13 +23,11 @@ class AppointmentSolicitationServiceImpl(
     override fun createAppointmentSolicitation(
         appointmentSolicitationRequestDto: AppointmentSolicitationRequestDto
     ): AppointmentSolicitationResponseDto {
-        // Check if there are doctors with the requested specialty
         val doctors = doctorRepository.findBySpecialty(appointmentSolicitationRequestDto.specialty)
         if (doctors.isEmpty()) {
             throw ResourceNotFoundException("No doctors found with specialty: ${appointmentSolicitationRequestDto.specialty}")
         }
 
-        // Create and save the appointment solicitation
         val appointmentSolicitation = AppointmentSolicitation(
             patientName = appointmentSolicitationRequestDto.patientName,
             patientAge = appointmentSolicitationRequestDto.patientAge,
@@ -42,13 +40,11 @@ class AppointmentSolicitationServiceImpl(
 
         val savedSolicitation = appointmentSolicitationRepository.save(appointmentSolicitation)
 
-        // Send the solicitation ID to Kafka for processing
         val kafkaMessage = AppointmentSolicitationKafkaMessage(
             appointmentSolicitationId = savedSolicitation.id!!
         )
         kafkaProducerService.sendAppointmentSolicitationMessage(kafkaMessage)
 
-        // Return the response DTO
         return mapToResponseDto(savedSolicitation)
     }
 

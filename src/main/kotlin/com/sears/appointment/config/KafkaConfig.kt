@@ -31,8 +31,6 @@ class KafkaConfig {
     @Value("\${spring.kafka.consumer.group-id}")
     private lateinit var groupId: String
 
-    // Producer configuration
-
     @Bean
     fun producerConfigs(): Map<String, Any> {
         return mapOf(
@@ -52,8 +50,6 @@ class KafkaConfig {
     fun kafkaTemplate(): KafkaTemplate<String, AppointmentSolicitationKafkaMessage> {
         return KafkaTemplate(producerFactory())
     }
-
-    // Consumer configuration
 
     @Bean
     fun consumerConfigs(): Map<String, Any> {
@@ -81,16 +77,13 @@ class KafkaConfig {
         val factory = ConcurrentKafkaListenerContainerFactory<String, AppointmentSolicitationKafkaMessage>()
         factory.consumerFactory = consumerFactory()
 
-        // Configura uma política de retry simples com 2 tentativas e 1s de intervalo
-        val backOff = FixedBackOff(1000L, 2L) // 1000 ms delay, 2 tentativas
+        val backOff = FixedBackOff(1000L, 2L)
 
         val errorHandler = DefaultErrorHandler(backOff)
 
         factory.setCommonErrorHandler(errorHandler)
         return factory
     }
-
-    // Topic configuration
 
     @Bean
     fun appointmentRequestTopic(): NewTopic {
