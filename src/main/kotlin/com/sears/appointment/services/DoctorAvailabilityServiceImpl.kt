@@ -180,7 +180,30 @@ class DoctorAvailabilityServiceImpl(
         return availability?.timeSlots?.filter { it.isAvailable } ?: emptyList()
     }
 
-    override fun findNextAvailableTimeSlot(
+    override fun findNextAvailableTimeSlotBySpecialty(
+        specialty: String,
+        fromDate: LocalDate,
+        fromTime: LocalTime
+    ): Triple<String, LocalDate, String>? {
+        logger.info("Finding next available time slot for specialty: {}", specialty)
+
+        val doctorsWithSpecialty = findDoctorsWithSpecialty(specialty)
+        if (doctorsWithSpecialty.isEmpty()) {
+            return null
+        }
+
+        for (doctorId in doctorsWithSpecialty) {
+            val nextAvailable = findNextAvailableTimeSlotByDoctor(doctorId, fromDate, fromTime)
+            if (nextAvailable != null) {
+                val (availableDate, availableTime) = nextAvailable
+                return Triple(doctorId, availableDate, availableTime)
+            }
+        }
+
+        return null
+    }
+
+    override fun findNextAvailableTimeSlotByDoctor(
         doctorId: String, 
         fromDate: LocalDate, 
         fromTime: LocalTime
@@ -294,6 +317,15 @@ class DoctorAvailabilityServiceImpl(
             JavaDayOfWeek.SATURDAY -> DayOfWeek.SATURDAY
             JavaDayOfWeek.SUNDAY -> DayOfWeek.SUNDAY
         }
+    }
+
+    override fun isDoctorAvailableAt(doctorId: String, date: LocalDate, time: LocalTime): Boolean {
+        return isTimeSlotAvailable(doctorId, date, time)
+    }
+
+    override fun findDoctorsWithSpecialty(specialty: String): List<String> {
+        return doctorRepository.findBySpecialty(specialty)
+            .map { it.id!! }
     }
 
 } 

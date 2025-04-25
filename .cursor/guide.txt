@@ -80,7 +80,7 @@ Phase 4 - Appointment Solicitation [DONE]
  - We save all this information in the solicitation table.
  - We send the ID of this solicitation to a Kafka topic.
 
-Phase 5 - Consumer: Validate Appointment Solicitation
+Phase 5 - Consumer: Validate Appointment Solicitation [DONE]
  - Remember, in Phase 4 we created the solicitation, so it's important to use the same collection to simply update and first mark the status as PROCESSED, and after validations, as either SUGGESTED or CONFIRMED.
  - In case of any error, we need to update the status back to PENDING and re-publish the message to the topic.
  - We need to read the topic that contains the appointment information.
@@ -92,3 +92,22 @@ Phase 5 - Consumer: Validate Appointment Solicitation
  - Therefore, if we have a solicitation at 14:00 and another at 14:05, the same doctor cannot take both.
  - If no doctor is available at the requested time, we will assign the first available time for any doctor with the required specialty.
  - If the assigned time is different from the requested time, the status must wait for confirmation by the patient (we will create a REST API in the future for this confirmation).
+
+Phase 6 - Confirming a Different Time
+ - We need two routes here.
+ - These two requests can be handled in the AppointmentSolicitationController.
+ - In Phase 5, we have two rules below:
+ - Rule in Phase 5 "If no doctor is available at the requested time, we will assign the first available time for any doctor with the required specialty".
+ - Another rule in Phase 5 "If the assigned time is different from the requested time, the status must wait for confirmation by the patient (we will create a REST API in the future for this confirmation)."
+ - Phase 5 is already implemented.
+ - Now we need to work on Phase 6.1 and 6.2.
+
+Phase 6.1 - Get Suggested Appointments
+ - First, a GET request that returns all appointments with the status SUGGESTED.
+ - I don't need to send any additional information in the request.
+ - Implement pagination with 10 appointments per page.
+
+Phase 6.2 - Confirm Suggested Appointment
+ - I will send you the ID of the appointment and whether it was accepted or not.
+ - You need to validate that the appointment has the status SUGGESTED.
+ - If it has any other status, throw an error.

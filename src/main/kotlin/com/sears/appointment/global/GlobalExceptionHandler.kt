@@ -1,6 +1,7 @@
 package com.sears.appointment.global
 
 import com.sears.appointment.dto.ApiReturn
+import com.sears.appointment.global.exceptions.BadRequestException
 import com.sears.appointment.global.exceptions.ResourceNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -48,6 +49,16 @@ class GlobalExceptionHandler {
             data = null
         )
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse)
+    }
+    
+    @ExceptionHandler(BadRequestException::class)
+    fun handleBadRequestException(ex: BadRequestException): ResponseEntity<ApiReturn<Nothing>> {
+        val apiResponse = ApiReturn<Nothing>(
+            success = false,
+            message = ex.message ?: "Bad request",
+            data = null
+        )
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
     }
 
     @ExceptionHandler(Exception::class)
