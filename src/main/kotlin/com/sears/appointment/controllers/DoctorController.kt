@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/doctors")
-@Tag(name = "Doctor Management", description = "Endpoints for managing doctors")
+@Tag(name = "3 - Doctor Management", description = "Endpoints for managing doctors")
 @SecurityRequirement(name = "Bearer")
 class DoctorController(private val doctorService: DoctorService) {
 

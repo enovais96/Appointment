@@ -104,7 +104,7 @@ class AppointmentSolicitationServiceImpl(
 
             val saved = appointmentSolicitationRepository.save(confirmedSolicitation)
             return getAppointmentSolicitationById(saved.id!!)
-            
+
         } else {
 
             val updatedSolicitation = solicitation.copy(
